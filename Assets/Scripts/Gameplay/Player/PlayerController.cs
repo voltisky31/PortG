@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController characterController;
 
-    [Header("Movmeent Settings")]
+    [Header("Movement Settings")]
     [SerializeField] private float velocity = 5;
     [SerializeField] private float sprintModificator = 3;
     [SerializeField] private float staminaUse = 0.5f;
@@ -25,6 +25,10 @@ public class PlayerController : MonoBehaviour
 
     private float yMovement = -9.81f;
 
+    Controls controls;
+    private bool isSprinting = false;
+    private bool isJumping = false;
+
     private void Awake()
     {
         if (Instance != null)
@@ -32,13 +36,37 @@ public class PlayerController : MonoBehaviour
         
         Instance = this;
         characterController = GetComponent<CharacterController>();
+
+        controls = new Controls();
+        controls.Gameplay.Sprint.performed += ctx => Sprint();
+        controls.Gameplay.Jump.performed += ctx => Jump();
+    }
+
+    private void Sprint()
+    {
+        isSprinting = true;
+    }
+
+    private void Jump()
+    {
+        isJumping = true;
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Disable();
     }
 
     private void Update()
     {
-        var movementValue = new Vector2(Input.GetAxis("Horizontal"),  Input.GetAxis("Vertical"));
+        var movementValue = new Vector2 (controls.Gameplay.Move.ReadValue<Vector2>().x, controls.Gameplay.Move.ReadValue<Vector2>().y);
 
-        if (SprintSkill.IsActive && Input.GetKey(KeyCode.LeftShift) && StaminaVariable.Value > 0)
+        if (SprintSkill.IsActive && isSprinting == true && StaminaVariable.Value > 0)
         {
             movementValue *= sprintModificator;
             StaminaVariable.Value -= staminaUse * Time.deltaTime;
@@ -56,8 +84,11 @@ public class PlayerController : MonoBehaviour
         if(characterController.velocity.sqrMagnitude > 0.1)
             transform.forward = new Vector3(movementValue.x, 0f, movementValue.y);
 
-        if (JumpSkill.IsActive && Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded)
+        if (JumpSkill.IsActive && isJumping == true && characterController.isGrounded)
+        {
             yMovement = 10f;
+            isJumping = false;
+        }
 
         yMovement = Mathf.Max(-9.81f, yMovement - Time.deltaTime * 30f);
     }

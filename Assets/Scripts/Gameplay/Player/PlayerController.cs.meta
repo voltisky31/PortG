@@ -3,7 +3,12 @@ guid: 9155c053cb95cf649862ce211133b67c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - HealthVariable: {fileID: 11400000, guid: c48db95dffe8ce742a3a9b063c66c4bb, type: 2}
+  - ManaVariable: {fileID: 11400000, guid: eea334afbf681e44c8a0f394f3005e88, type: 2}
+  - StaminaVariable: {fileID: 11400000, guid: 4030140e7f33db7469ca55722d1b3f04, type: 2}
+  - JumpSkill: {fileID: 11400000, guid: ee6d361062635f24f99acb5197018902, type: 2}
+  - SprintSkill: {fileID: 11400000, guid: c44a6a3c29b8603409a6a0cb4321cced, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
